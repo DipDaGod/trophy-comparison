@@ -1,2 +1,2 @@
-# trophy-comparison
-comparing ronaldo and messi's trophies
+Messi and Ronaldo are legends of football. but how many trophies do they really have?
+click [here](https://dipdagod.github.io/trophy-comparison/yass.html) and find out :3 
