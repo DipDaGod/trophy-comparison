@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messi vs Ronaldo — Trophy Cabinet</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8cc7a;
+      --messi-blue: #1a4fa0;
+      --messi-blue-light: #3a6fc0;
+      --ronaldo-red: #b01a1a;
+      --ronaldo-red-light: #d03a3a;
+      --bg: #0c0c0c;
+      --bg-2: #141414;
+      --bg-3: #1e1e1e;
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --text: #f0ede6;
+      --text-muted: #888;
+      --text-dim: #555;
+      --cabinet-wood: #1a1208;
+      --cabinet-wood-edge: #2a1e0a;
+      --shelf: #221800;
+      --shelf-edge: #3a2c0e;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+
+      /* ── Hero image size — tweak this to scale both player images ── */
+      --player-img-scale: 1.4567;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-weight: 300; overflow-x: hidden; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 20% 100%, rgba(26,79,160,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 100%, rgba(176,26,26,0.18) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .hero-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 0 2rem 4rem;
+      position: relative;
+    }
+    .hero-side--messi { align-items: flex-end; padding-right: 3rem; }
+    .hero-side--ronaldo { align-items: flex-start; padding-left: 3rem; }
+
+    .player-img-wrap { position: relative; margin-bottom: 2rem; }
+    .player-img {
+      display: block; max-width: 100%; height: auto;
+      width: calc(280px * var(--player-img-scale));
+      filter: grayscale(20%);
+      mask-image: linear-gradient(to top, transparent 0%, black 25%);
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 25%);
+    }
+    .player-img-placeholder {
+      width: calc(280px * var(--player-img-scale));
+      height: calc(420px * var(--player-img-scale));
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px; border: 1px dashed rgba(255,255,255,0.12); border-radius: 4px;
+      color: var(--text-dim); font-size: 13px; font-family: var(--font-mono);
+      text-align: center; padding: 1rem;
+      mask-image: linear-gradient(to top, transparent 0%, black 25%);
+      -webkit-mask-image: linear-gradient(to top, transparent 0%, black 25%);
+    }
+    .player-img-placeholder .placeholder-icon { font-size: 48px; opacity: 0.2; }
+
+    .player-number {
+      font-family: var(--font-display); font-size: 120px; line-height: 0.85;
+      color: rgba(255,255,255,0.04); position: absolute; bottom: 60px;
+      pointer-events: none; user-select: none;
+    }
+    .hero-side--messi .player-number { right: 2rem; }
+    .hero-side--ronaldo .player-number { left: 2rem; }
+
+    .player-name-display { font-family: var(--font-display); font-size: 52px; letter-spacing: 2px; line-height: 1; margin-bottom: 6px; }
+    .hero-side--messi .player-name-display { color: var(--messi-blue-light); }
+    .hero-side--ronaldo .player-name-display { color: var(--ronaldo-red-light); }
+
+    .player-country { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+
+    .player-stat-row { display: flex; gap: 20px; align-items: center; }
+    .hero-side--messi .player-stat-row { justify-content: flex-end; }
+    .hero-side--ronaldo .player-stat-row { justify-content: flex-start; }
+
+    .player-stat { text-align: center; }
+    .stat-val { font-family: var(--font-display); font-size: 28px; color: var(--gold); line-height: 1; }
+    .stat-label { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+
+    .hero-center {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 0 1.5rem; position: relative; z-index: 2;
+    }
+    .hero-center::before {
+      content: ''; position: absolute; top: 0; bottom: 0; width: 1px;
+      background: linear-gradient(to bottom, transparent, var(--border) 20%, var(--border) 80%, transparent);
+    }
+    .vs-text {
+      font-family: var(--font-display); font-size: 36px; letter-spacing: 4px;
+      color: var(--gold); position: relative; z-index: 1; background: var(--bg); padding: 12px 0;
+    }
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      color: var(--text-dim); font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      animation: float 2.5s ease-in-out infinite;
+    }
+    .scroll-hint::after { content: ''; width: 1px; height: 40px; background: linear-gradient(to bottom, var(--text-dim), transparent); }
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ── CABINET SECTION ── */
+    .cabinet-section { padding: 6rem 2rem; max-width: 1400px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 4rem; }
+    .section-eyebrow { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; font-family: var(--font-mono); }
+    .section-title { font-family: var(--font-display); font-size: 64px; letter-spacing: 3px; color: var(--text); line-height: 1; }
+
+    .filter-bar {
+      display: flex; justify-content: center; align-items: center;
+      gap: 8px; margin-bottom: 3rem; flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+      padding: 6px 16px; border-radius: 2px; cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+    }
+    .filter-btn:hover { border-color: var(--border-hover); color: var(--text); }
+    .filter-btn.active { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06); }
+
+    /* visual separator between filter buttons and search */
+    .filter-search-divider {
+      width: 1px; height: 20px; background: var(--border);
+      margin: 0 8px; flex-shrink: 0;
+    }
+
+    .search-wrap {
+      position: relative; display: flex; align-items: center;
+    }
+    .trophy-search {
+      background: var(--bg-2); border: 1px solid var(--border-hover); color: var(--text);
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+      padding: 6px 70px 6px 32px; border-radius: 2px;
+      width: 210px; transition: all 0.2s; outline: none;
+      -webkit-appearance: none;
+    }
+    .trophy-search::placeholder { color: var(--text-dim); }
+    .trophy-search:focus { border-color: var(--gold); width: 250px; }
+    .trophy-search.has-query { border-color: var(--gold); color: var(--gold); }
+    .trophy-search::-webkit-search-cancel-button { display: none; }
+    .search-icon {
+      position: absolute; left: 10px; font-size: 14px;
+      color: var(--text-muted); pointer-events: none; line-height: 1;
+    }
+    /* Ctrl+K badge — sits inside the input on the right */
+    .search-kbd {
+      position: absolute; right: 8px;
+      display: flex; align-items: center; gap: 2px;
+      pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    .search-kbd kbd {
+      background: var(--bg-3); border: 1px solid var(--border-hover);
+      border-radius: 3px; padding: 1px 5px; font-family: var(--font-mono);
+      font-size: 10px; color: var(--text-dim); line-height: 1.6;
+    }
+
+    .cabinets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+
+    .cabinet {
+      background: var(--cabinet-wood); border: 1px solid var(--cabinet-wood-edge);
+      position: relative; opacity: 0; transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .cabinet.visible { opacity: 1; transform: translateY(0); }
+    .cabinet:first-child { border-right: none; }
+
+    .cabinet-top { background: var(--cabinet-wood-edge); height: 8px; border-bottom: 1px solid rgba(201,168,76,0.15); }
+    .cabinet-header {
+      padding: 20px 24px 16px; display: flex; align-items: baseline;
+      justify-content: space-between; border-bottom: 1px solid var(--cabinet-wood-edge);
+    }
+    .cabinet-player-name { font-family: var(--font-display); font-size: 32px; letter-spacing: 2px; }
+    .cabinet--messi .cabinet-player-name { color: var(--messi-blue-light); }
+    .cabinet--ronaldo .cabinet-player-name { color: var(--ronaldo-red-light); }
+    .cabinet-trophy-count { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); }
+
+    .cabinet-body { padding: 24px; }
+
+    .shelf { margin-bottom: 28px; }
+    .shelf-label {
+      font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--text-dim); font-family: var(--font-mono); margin-bottom: 10px; padding-left: 2px;
+    }
+    .shelf-items {
+      display: flex; gap: 12px; flex-wrap: wrap;
+      background: var(--shelf); border: 1px solid var(--shelf-edge);
+      border-bottom: 3px solid var(--shelf-edge);
+      padding: 20px 16px 14px; border-radius: 2px; min-height: 120px;
+    }
+
+    /* ── TROPHY CARD ── */
+    .trophy-card {
+      width: 110px;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      cursor: pointer; position: relative;
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .trophy-card:hover { transform: translateY(-8px); }
+    .trophy-card:hover .trophy-glow { opacity: 1; }
+    .trophy-card.active .trophy-img-wrap { outline: 1px solid var(--gold); outline-offset: 4px; }
+
+    .trophy-glow {
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+      width: 64px; height: 12px; background: rgba(201,168,76,0.4);
+      border-radius: 50%; filter: blur(8px); opacity: 0; transition: opacity 0.2s; pointer-events: none;
+    }
+
+    .trophy-img-wrap {
+      width: 96px; height: 120px;
+      position: relative; transition: filter 0.2s;
+    }
+    .trophy-card:hover .trophy-img-wrap { filter: brightness(1.2); }
+
+    .trophy-img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; display: block; }
+
+    .trophy-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1);
+      border-radius: 2px; color: var(--text-dim); font-size: 8px;
+      font-family: var(--font-mono); text-align: center; padding: 6px; gap: 4px; line-height: 1.3;
+    }
+    .trophy-img-placeholder .t-icon { font-size: 28px; opacity: 0.25; }
+
+    /* count badge */
+    .trophy-count-badge {
+      position: absolute; top: -6px; right: -6px;
+      background: var(--gold); color: #1a1000;
+      font-family: var(--font-mono); font-size: 10px; font-weight: 500;
+      min-width: 20px; height: 20px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 5px; line-height: 1;
+    }
+
+    .trophy-label {
+      font-size: 9px; color: var(--text-muted); text-align: center;
+      line-height: 1.35; font-family: var(--font-mono); width: 100%;
+    }
+    .trophy-card[data-tier="gold"] .trophy-label { color: var(--gold); }
+
+    .empty-shelf { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); padding: 4px 8px; align-self: center; }
+
+    /* ── SIDE PANEL ── */
+    .panel-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .panel-overlay.open { opacity: 1; pointer-events: all; }
+
+    .side-panel {
+      position: fixed; top: 0; right: 0; bottom: 0; width: 360px;
+      background: var(--bg-2); border-left: 1px solid var(--border);
+      z-index: 100; transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      display: flex; flex-direction: column; overflow-y: auto;
+    }
+    .side-panel.open { transform: translateX(0); }
+
+    .panel-close-btn {
+      position: absolute; top: 16px; right: 16px;
+      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+      width: 32px; height: 32px; border-radius: 2px; cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+    }
+    .panel-close-btn:hover { border-color: var(--border-hover); color: var(--text); }
+
+    .panel-trophy-display {
+      padding: 3rem 2rem 2rem; display: flex; flex-direction: column; align-items: center;
+      border-bottom: 1px solid var(--border); background: var(--bg-3);
+    }
+    .panel-trophy-img-wrap { width: 120px; height: 150px; margin-bottom: 1.5rem; position: relative; }
+    .panel-trophy-img { width: 100%; height: 100%; object-fit: contain; object-position: center bottom; }
+    .panel-trophy-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.08);
+      border-radius: 4px; color: var(--text-dim); font-family: var(--font-mono);
+      font-size: 11px; text-align: center; padding: 1rem; gap: 8px; line-height: 1.4;
+    }
+    .panel-trophy-img-placeholder .big-icon { font-size: 32px; opacity: 0.2; }
+
+    .panel-trophy-name { font-family: var(--font-display); font-size: 28px; letter-spacing: 2px; text-align: center; margin-bottom: 4px; }
+    .panel-player-tag { font-family: var(--font-mono); font-size: 11px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+
+    .panel-body { padding: 1.5rem 2rem; flex: 1; }
+    .panel-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 12px 0; border-bottom: 1px solid var(--border); gap: 16px;
+    }
+    .panel-row:last-child { border-bottom: none; }
+    .panel-key { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); font-family: var(--font-mono); flex-shrink: 0; }
+    .panel-val { font-size: 14px; color: var(--text); text-align: right; font-weight: 400; }
+    .panel-val.gold { color: var(--gold); font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; }
+
+    .panel-notes {
+      margin-top: 1.5rem; padding: 1rem; background: var(--bg-3);
+      border: 1px solid var(--border); border-radius: 2px;
+      font-size: 13px; color: var(--text-muted); line-height: 1.7;
+    }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+    /* ── STATS SECTION ── */
+    .stats-section {
+      border-top: 1px solid var(--border);
+      padding: 5rem 2rem;
+    }
+    .stats-inner {
+      max-width: 960px; margin: 0 auto;
+      display: flex; flex-direction: column; align-items: center; gap: 2rem;
+    }
+    .stats-heading {
+      font-family: var(--font-display); font-size: 32px; letter-spacing: 3px;
+      color: var(--text); text-align: center; margin: 0;
+    }
+    .stats-sub {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+      color: var(--text-dim); text-align: center; margin: -1rem 0 0;
+    }
+    .stats-players-row {
+      width: 100%; display: grid; grid-template-columns: 1fr auto 1fr;
+      align-items: stretch; gap: 0;
+      border: 1px solid rgba(255,255,255,0.14); border-radius: 20px; overflow: hidden;
+      background: var(--bg-2);
+      box-shadow: 0 0 0 1px rgba(201,168,76,0.08), 0 8px 40px rgba(0,0,0,0.5);
+    }
+    .stats-player {
+      display: flex; flex-direction: column; gap: 0;
+    }
+    .stats-name {
+      font-family: var(--font-display); font-size: 22px; letter-spacing: 3px;
+      text-transform: uppercase; text-align: center;
+      padding: 14px 12px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .stats-player--messi .stats-name { background: rgba(26,79,160,0.18); }
+    .stats-player--ronaldo .stats-name { background: rgba(176,26,26,0.18); }
+
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    }
+    .stats-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 8px; padding: 28px 12px;
+      background: rgba(255,255,255,0.02);
+      border-right: 1px solid rgba(255,255,255,0.07);
+      position: relative;
+    }
+    .stats-item:last-child { border-right: none; }
+    .stats-item--highlight {
+      background: linear-gradient(160deg, rgba(26,79,160,0.45) 0%, rgba(26,79,160,0.2) 100%);
+    }
+    .stats-player--ronaldo .stats-item--highlight {
+      background: linear-gradient(160deg, rgba(176,26,26,0.55) 0%, rgba(176,26,26,0.22) 100%);
+    }
+
+    .stats-val {
+      font-family: var(--font-display); font-size: 54px; line-height: 1; color: #fff;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .stats-item--highlight .stats-val { color: #fff; }
+
+    .stats-label {
+      font-family: var(--font-mono); font-size: 9px; letter-spacing: 3px;
+      text-transform: uppercase; color: rgba(255,255,255,0.5);
+    }
+    .stats-item--highlight .stats-label { color: rgba(255,255,255,0.8); }
+
+    .stats-extras {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex; flex-direction: column;
+      background: rgba(255,255,255,0.015);
+    }
+    .stats-extra {
+      font-family: var(--font-mono); font-size: 11px; letter-spacing: 1px;
+      color: var(--text-dim); padding: 11px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .stats-extra:last-child { border-bottom: none; }
+    .stats-extra strong { color: var(--text); font-size: 14px; }
+    .stats-extra--gold { color: rgba(201,168,76,0.7); }
+    .stats-extra--gold strong { color: var(--gold); font-size: 14px; }
+
+    .stats-divider {
+      width: 1px; align-self: stretch;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.12) 15%, rgba(255,255,255,0.12) 85%, transparent);
+    }
+
+    /* Show detailed stats button */
+    .stats-detail-btn {
+      margin-top: 0.5rem;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: var(--font-mono); font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 13px 36px; border-radius: 99px; cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 18px rgba(201,168,76,0.12);
+    }
+    .stats-detail-btn:hover {
+      background: rgba(201,168,76,0.2);
+      box-shadow: 0 0 28px rgba(201,168,76,0.25);
+      transform: translateY(-1px);
+    }
+    .stats-detail-btn:active { transform: translateY(0); }
+
+    /* Detailed stats modal */
+    .detail-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+      z-index: 200; display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+    }
+    .detail-modal-overlay.open { opacity: 1; pointer-events: all; }
+    .detail-modal {
+      background: var(--bg-2); border: 1px solid var(--border); border-radius: 16px;
+      width: min(860px, 92vw); max-height: 85vh;
+      overflow-y: auto; padding: 2.5rem;
+      transform: translateY(20px); transition: transform 0.25s;
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+    }
+    .detail-modal-overlay.open .detail-modal { transform: translateY(0); }
+    .detail-modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 2rem;
+    }
+    .detail-modal-title {
+      font-family: var(--font-display); font-size: 24px; letter-spacing: 2px; color: var(--text);
+    }
+    .detail-modal-sub {
+      font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px; color: var(--text-dim);
+      margin-top: 2px;
+    }
+    .detail-modal-close {
+      background: transparent; border: 1px solid var(--border); color: var(--text-muted);
+      width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+      font-size: 14px; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .detail-modal-close:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* stat table groups */
+    .detail-group { margin-bottom: 2rem; }
+    .detail-group:last-child { margin-bottom: 0; }
+    .detail-group-title {
+      font-family: var(--font-display); font-size: 16px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--text); margin-bottom: 0.75rem; padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(201,168,76,0.25);
+    }
+    .detail-players {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .detail-players.single { grid-template-columns: 1fr; max-width: 420px; }
+    .detail-card {
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }
+    .detail-card-name {
+      font-family: var(--font-display); font-size: 16px; letter-spacing: 2px; text-transform: uppercase;
+      padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .detail-card--messi .detail-card-name {
+      color: #fff;
+      background: linear-gradient(90deg, rgba(26,79,160,0.7) 0%, rgba(26,79,160,0.3) 100%);
+    }
+    .detail-card--ronaldo .detail-card-name {
+      color: #fff;
+      background: linear-gradient(90deg, rgba(176,26,26,0.7) 0%, rgba(176,26,26,0.3) 100%);
+    }
+    .detail-rows { display: flex; flex-direction: column; }
+    .detail-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+      font-family: var(--font-mono); font-size: 11px;
+    }
+    .detail-row:nth-child(even) { background: rgba(255,255,255,0.025); }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-row-label { color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; font-size: 10px; }
+    .detail-row-val { color: var(--text); font-size: 16px; letter-spacing: 0.5px; font-family: var(--font-display); }
+    .detail-card--messi .detail-row-val  { color: #8ab4f8; }
+    .detail-card--ronaldo .detail-row-val { color: #f08080; }
+
+    @media (max-width: 960px) {
+      .hero { grid-template-columns: 1fr auto 1fr; }
+      .hero-side--messi { padding-right: 1.5rem; }
+      .hero-side--ronaldo { padding-left: 1.5rem; }
+      .trophy-card { width: 96px; }
+      .trophy-img-wrap { width: 82px; height: 104px; }
+    }
+
+    @media (max-width: 768px) {
+      .hero { grid-template-columns: 1fr; grid-template-rows: auto auto auto; min-height: auto; }
+      .hero-side--messi, .hero-side--ronaldo { align-items: center; padding: 3rem 1rem 1rem; }
+      .cabinets-grid { grid-template-columns: 1fr; }
+      .cabinet:first-child { border-right: 1px solid var(--cabinet-wood-edge); border-bottom: none; }
+      .side-panel {
+        width: 100%; border-left: none; border-top: 1px solid var(--border);
+        top: auto; height: 70vh; transform: translateY(100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .side-panel.open { transform: translateY(0); }
+      .section-title { font-size: 40px; }
+      .trophy-card { width: 88px; }
+      .trophy-img-wrap { width: 74px; height: 94px; }
+      .stats-players-row { grid-template-columns: 1fr; }
+      .stats-divider { width: 100%; height: 1px; }
+      .stats-val { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <section class="hero" aria-label="Messi vs Ronaldo comparison">
+    <div class="hero-side hero-side--messi">
+      <span class="player-number" aria-hidden="true">10</span>
+      <div class="player-img-wrap">
+        <!-- NAMING: assets/players/messi-hero.png — full body, transparent PNG, ~560x840px -->
+        <img src="assets/players/messi-hero.png" alt="Lionel Messi in Argentina kit, arms raised in celebration" class="player-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="player-img-placeholder" style="display:none;" aria-hidden="true">
+          <span class="placeholder-icon">🧑</span>
+          <span>assets/players/<br>messi-hero.png</span>
+        </div>
+      </div>
+      <div class="player-info">
+        <div class="player-name-display">Messi</div>
+        <div class="player-country">Argentina · Born 1987</div>
+        <div class="player-stat-row">
+          <div class="player-stat"><div class="stat-val" id="hero-messi-total">–</div><div class="stat-label">Total Trophies</div></div>
+          <div class="player-stat"><div class="stat-val">8</div><div class="stat-label">Ballons d'Or</div></div>
+          <div class="player-stat"><div class="stat-val">1</div><div class="stat-label">World Cup</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-center" aria-hidden="true">
+      <span class="vs-text">VS</span>
+    </div>
+
+    <div class="hero-side hero-side--ronaldo">
+      <span class="player-number" aria-hidden="true">7</span>
+      <div class="player-img-wrap">
+        <!-- NAMING: assets/players/ronaldo-hero.png — full body, transparent PNG, ~560x840px -->
+        <img src="assets/players/ronaldo-hero.png" alt="Cristiano Ronaldo in Portugal kit, fist pump celebration" class="player-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div class="player-img-placeholder" style="display:none;" aria-hidden="true">
+          <span class="placeholder-icon">🧑</span>
+          <span>assets/players/<br>ronaldo-hero.png</span>
+        </div>
+      </div>
+      <div class="player-info">
+        <div class="player-name-display">Ronaldo</div>
+        <div class="player-country">Portugal · Born 1985</div>
+        <div class="player-stat-row">
+          <div class="player-stat"><div class="stat-val" id="hero-ronaldo-total">–</div><div class="stat-label">Total Trophies</div></div>
+          <div class="player-stat"><div class="stat-val">5</div><div class="stat-label">Ballons d'Or</div></div>
+          <div class="player-stat"><div class="stat-val">1</div><div class="stat-label">Euro</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">scroll</div>
+  </section>
+
+  <main class="cabinet-section">
+    <header class="section-header">
+      <p class="section-eyebrow">Career honours</p>
+      <h1 class="section-title">Trophy Cabinet</h1>
+    </header>
+
+    <nav class="filter-bar" aria-label="Filter trophies">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="team">Team</button>
+      <button class="filter-btn" data-filter="individual">Individual</button>
+      <button class="filter-btn" data-filter="international">International</button>
+      <button class="filter-btn" data-filter="club">Club</button>
+
+      <div class="filter-search-divider" aria-hidden="true"></div>
+
+      <div class="search-wrap">
+        <span class="search-icon" aria-hidden="true">⌕</span>
+        <input
+          class="trophy-search"
+          id="trophy-search"
+          type="search"
+          placeholder="Search trophies…"
+          aria-label="Search trophies (Ctrl+K)"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <span class="search-kbd" aria-hidden="true">
+          <kbd>Ctrl</kbd><kbd>K</kbd>
+        </span>
+      </div>
+    </nav>
+
+    <div class="cabinets-grid">
+      <article class="cabinet cabinet--messi" id="cabinet-messi" aria-label="Messi's trophy cabinet">
+        <div class="cabinet-top"></div>
+        <div class="cabinet-header">
+          <span class="cabinet-player-name">Messi</span>
+          <span class="cabinet-trophy-count" id="messi-count" aria-live="polite"></span>
+        </div>
+        <div class="cabinet-body" id="messi-shelves"></div>
+      </article>
+
+      <article class="cabinet cabinet--ronaldo" id="cabinet-ronaldo" aria-label="Ronaldo's trophy cabinet">
+        <div class="cabinet-top"></div>
+        <div class="cabinet-header">
+          <span class="cabinet-player-name">Ronaldo</span>
+          <span class="cabinet-trophy-count" id="ronaldo-count" aria-live="polite"></span>
+        </div>
+        <div class="cabinet-body" id="ronaldo-shelves"></div>
+      </article>
+    </div>
+  </main>
+
+  <section class="stats-section" aria-label="Career statistics">
+    <div class="stats-inner">
+      <h2 class="stats-heading">All Time Career</h2>
+      <p class="stats-sub">Excluding club friendlies</p>
+
+      <div class="stats-players-row">
+
+        <div class="stats-player stats-player--messi">
+          <div class="stats-name" style="color:var(--messi-blue-light)">Messi</div>
+          <div class="stats-grid">
+            <div class="stats-item">
+              <div class="stats-val">1155</div>
+              <div class="stats-label">Apps</div>
+            </div>
+            <div class="stats-item">
+              <div class="stats-val">414</div>
+              <div class="stats-label">Assists</div>
+            </div>
+            <div class="stats-item stats-item--highlight">
+              <div class="stats-val">910</div>
+              <div class="stats-label">Goals</div>
+            </div>
+          </div>
+          <div class="stats-extras">
+            <div class="stats-extra"><strong>141</strong> mins per goal.</div>
+          </div>
+	  <div class="stats-extras">
+            <div class="stats-extra stats-extra--gold"><strong>92</strong> mins per goal contribution</div>
+          </div>
+        </div>
+
+        <div class="stats-divider" aria-hidden="true"></div>
+
+        <div class="stats-player stats-player--ronaldo">
+          <div class="stats-name" style="color:var(--ronaldo-red-light)">Ronaldo</div>
+          <div class="stats-grid">
+            <div class="stats-item stats-item--highlight">
+              <div class="stats-val">973</div>
+              <div class="stats-label">Goals</div>
+            </div>
+            <div class="stats-item">
+              <div class="stats-val">261</div>
+              <div class="stats-label">Assists</div>
+            </div>
+            <div class="stats-item">
+              <div class="stats-val">1323</div>
+              <div class="stats-label">Apps</div>
+            </div>
+          </div>
+          <div class="stats-extras">
+            <div class="stats-extra stats-extra--gold"><strong>126</strong> mins per goal.</div>
+          </div>
+	  <div class="stats-extras">
+            <div class="stats-extra"><strong>100</strong> mins per goal contribution.</div>
+          </div>
+        </div>
+
+      </div>
+      <button class="stats-detail-btn" id="detail-stats-btn">Show Detailed Stats</button>
+    </div>
+  </section>
+
+  <!-- Detailed stats modal -->
+  <div class="detail-modal-overlay" id="detail-modal-overlay" aria-hidden="true">
+    <div class="detail-modal" role="dialog" aria-label="Detailed career statistics">
+      <div class="detail-modal-header">
+        <div>
+          <div class="detail-modal-title">Detailed Stats</div>
+          <div class="detail-modal-sub">Excluding club friendlies</div>
+        </div>
+        <button class="detail-modal-close" id="detail-modal-close" aria-label="Close">✕</button>
+      </div>
+
+      <!-- All Time Career -->
+      <div class="detail-group">
+        <div class="detail-group-title">All Time Career</div>
+        <div class="detail-players">
+          <div class="detail-card detail-card--messi">
+            <div class="detail-card-name">Messi</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearancs</span><span class="detail-row-val">1155</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">910</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">414</span></div>
+            </div>
+          </div>
+          <div class="detail-card detail-card--ronaldo">
+            <div class="detail-card-name">Ronaldo</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearancs</span><span class="detail-row-val">1323</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">973</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">261</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Internationals -->
+      <div class="detail-group">
+        <div class="detail-group-title">All Time Internationals</div>
+        <div class="detail-players">
+          <div class="detail-card detail-card--messi">
+            <div class="detail-card-name">Messi — Argentina</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearancs</span><span class="detail-row-val">198</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">116</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">61</span></div>
+            </div>
+          </div>
+          <div class="detail-card detail-card--ronaldo">
+            <div class="detail-card-name">Ronaldo — Portugal</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearancs</span><span class="detail-row-val">226</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">143</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">37</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Messi clubs -->
+      <div class="detail-group">
+        <div class="detail-group-title">Messi — By Club</div>
+        <div class="detail-players">
+          <div class="detail-card detail-card--messi">
+            <div class="detail-card-name">FC Barcelona</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appsearanc</span><span class="detail-row-val">778</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">672</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">269</span></div>
+            </div>
+          </div>
+          <div class="detail-card detail-card--messi">
+            <div class="detail-card-name">Paris Saint-Germain</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appsearanc</span><span class="detail-row-val">75</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">32</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">34</span></div>
+            </div>
+          </div>
+          <div class="detail-card detail-card--messi">
+            <div class="detail-card-name">Inter Miami</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearancs</span><span class="detail-row-val">104</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">90</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">50</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ronaldo clubs -->
+      <div class="detail-group">
+        <div class="detail-group-title">Ronaldo — By Club</div>
+        <div class="detail-players">
+          <div class="detail-card detail-card--ronaldo">
+            <div class="detail-card-name">Sporting CP</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearancs</span><span class="detail-row-val">31</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">5</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">4</span></div>
+            </div>
+          </div>
+          <div class="detail-card detail-card--ronaldo">
+            <div class="detail-card-name">Manchester United</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearancs</span><span class="detail-row-val">346</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">145</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">57</span></div>
+            </div>
+          </div>
+          <div class="detail-card detail-card--ronaldo">
+            <div class="detail-card-name">Real Madrid</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearancs</span><span class="detail-row-val">438</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">450</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">120</span></div>
+            </div>
+          </div>
+          <div class="detail-card detail-card--ronaldo">
+            <div class="detail-card-name">Juventus</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearances</span><span class="detail-row-val">134</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">101</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">20</span></div>
+            </div>
+          </div>
+          <div class="detail-card detail-card--ronaldo">
+            <div class="detail-card-name">Al Nassr</div>
+            <div class="detail-rows">
+              <div class="detail-row"><span class="detail-row-label">Appearances</span><span class="detail-row-val">148</span></div>
+              <div class="detail-row"><span class="detail-row-label">Goals</span><span class="detail-row-val">129</span></div>
+              <div class="detail-row"><span class="detail-row-label">Assists</span><span class="detail-row-val">23</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer style="text-align:center; padding:3rem 2rem; border-top:1px solid var(--border); color:var(--text-dim); font-family:var(--font-mono); font-size:11px; letter-spacing:1px; line-height:1.8;">
+    <p>Stats compiled through 2024 season. Not affiliated with FIFA, UEFA, or any football organisation.</p>
+    <p style="margin-top:6px;">Messi vs Ronaldo — Trophy Cabinet</p>
+  </footer>
+
+  <div class="panel-overlay" id="overlay" aria-hidden="true"></div>
+  <aside class="side-panel" id="side-panel" role="complementary" aria-label="Trophy details" aria-hidden="true">
+    <button class="panel-close-btn" id="panel-close" aria-label="Close trophy details">✕</button>
+    <div class="panel-trophy-display">
+      <div class="panel-trophy-img-wrap">
+        <img src="" alt="" class="panel-trophy-img" id="panel-img" style="display:none;" />
+        <div class="panel-trophy-img-placeholder" id="panel-img-placeholder">
+          <span class="big-icon">🏆</span>
+          <span id="panel-img-hint">trophy image here</span>
+        </div>
+      </div>
+      <div class="panel-trophy-name" id="panel-name">–</div>
+      <div class="panel-player-tag" id="panel-player-tag">–</div>
+    </div>
+    <div class="panel-body">
+      <div class="panel-row"><span class="panel-key">Count</span><span class="panel-val gold" id="panel-count">–</span></div>
+      <div class="panel-row"><span class="panel-key">Category</span><span class="panel-val" id="panel-category">–</span></div>
+      <div class="panel-row"><span class="panel-key">Competitions</span><span class="panel-val" id="panel-competition">–</span></div>
+      <div class="panel-row"><span class="panel-key">Years won</span><span class="panel-val" id="panel-years">–</span></div>
+      <div class="panel-row" id="panel-clubs-row"><span class="panel-key">Won with</span><span class="panel-val" id="panel-clubs">–</span></div>
+      <div class="panel-notes" id="panel-notes" style="display:none;"></div>
+    </div>
+  </aside>
+
+  <script>
+    /*
+      TROPHY DATA
+      -----------
+      Each entry = one unique trophy type per player (duplicates collapsed).
+      Fields:
+        id          : kebab-case unique string
+        player      : "messi" | "ronaldo"
+        name        : short display name shown on card
+        competition : full name shown in panel
+        count       : number of times won (shown as badge on card)
+        years       : string summarising years won
+        category    : "team" | "individual"
+        scope       : "club" | "international"
+        tier        : "gold" | "silver"
+        notes       : optional extra context
+        img         : path  e.g. "assets/trophies/ballon-dor.png"
+        imgAlt      : descriptive alt text
+
+      IMAGE NAMING (assets/trophies/):
+        ballon-dor.png         ucl.png              world-cup.png
+        copa-america.png       finalissima.png       golden-shoe.png
+        laliga.png             copa-del-rey.png      supercopa.png
+        uefa-super-cup.png     club-world-cup.png    golden-ball.png
+        iffhs-playmaker.png    iffhs-scorer.png      laureus.png
+        euro.png               nations-league.png    premier-league.png
+        fa-cup.png             carabao-cup.png       community-shield.png
+        serie-a.png            coppa-italia.png      supercoppa-italia.png
+        golden-foot.png        puskas.png            ligue1.png
+        mls-cup.png            mls-shield.png        mls-conference.png
+        leagues-cup.png        saudi-pro-league.png  arab-club-cup.png
+        supercopa-portugal.png
+    */
+    const TROPHIES = [
+
+      /* ════════════════ MESSI ════════════════ */
+
+      /* Individual — gold tier first */
+      { id:"m-ballon-dor",      player:"messi", name:"Ballon d'Or",          competition:"Ballon d'Or",                             count:8,  years:"2009, 2010, 2011, 2012, 2015, 2019, 2021, 2023", clubs:"FC Barcelona (×7), Inter Miami (×1)",           category:"individual", scope:"club",          tier:"gold",   league:["laliga","ligue1","mls"], country:["spain","france","usa"],       notes:"Record 8 Ballons d'Or — more than any player in history. Won across four different decades.", img:"assets/trophies/ballon-dor.png",      imgAlt:"Ballon d'Or trophy — golden ball on a black pedestal" },
+      { id:"m-golden-shoe",     player:"messi", name:"European Golden Shoe",          competition:"All European Leagues",                    count:6,  years:"2010, 2012, 2013, 2017, 2018, 2019",             clubs:"FC Barcelona",                                  category:"individual", scope:"club",          tier:"gold",   league:["laliga"], country:["spain"],                     notes:"Record 6 European Golden Shoes — more than any player in history.", img:"assets/trophies/euro-golden-shoe.png",     imgAlt:"European Golden Shoe — golden boot trophy" },
+      { id:"m-wc-golden-ball",  player:"messi", name:"WC Golden Ball",       competition:"World Cup Golden Ball",                   count:2,  years:"2014, 2022",                                      clubs:"Argentina",                                     category:"individual", scope:"international", tier:"gold",   league:["international"], country:["international","argentina"],              img:"assets/trophies/wc-golden-ball.png",     imgAlt:"FIFA World Cup Golden Ball award" },
+      { id:"m-laureus",         player:"messi", name:"Laureus Award",        competition:"Laureus World Sportsman of the Year",     count:2,  years:"2020, 2023",                                      clubs:"FC Barcelona (×1), Inter Miami (×1)",           category:"individual", scope:"club",          tier:"gold",   league:["laliga","mls"], country:["spain","usa"],               img:"assets/trophies/laureus.png",         imgAlt:"Laureus World Sports Award trophy" },
+      { id:"m-laliga-goldball", player:"messi", name:"La Liga Golden Ball",  competition:"La Liga Golden Ball",                     count:9,  years:"2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016", clubs:"FC Barcelona",                              category:"individual", scope:"club",          tier:"silver", league:["laliga"], country:["spain"],                     img:"assets/trophies/golden-ball.png",     imgAlt:"La Liga Golden Ball award" },
+      { id:"m-laliga-pichichi", player:"messi", name:"Pichichi",             competition:"La Liga Golden Boot (Pichichi)",          count:8,  years:"2010, 2012, 2013, 2017, 2018, 2019, 2020, 2021",  clubs:"FC Barcelona",                                  category:"individual", scope:"club",          tier:"silver", league:["laliga"], country:["spain"],                     img:"assets/trophies/pichichi.png",     imgAlt:"Pichichi La Liga top scorer trophy" },
+      { id:"m-ucl-boot",        player:"messi", name:"UCL Golden Boot",      competition:"Champions League Top Scorer",             count:6,  years:"2009, 2011, 2012, 2015, 2019, 2023",              clubs:"FC Barcelona (×5), PSG (×1)",                   category:"individual", scope:"club",          tier:"silver", league:["ucl"], country:["europe"],                        img:"assets/trophies/golden-shoe.png",     imgAlt:"UEFA Champions League top scorer award" },
+      { id:"m-cwc-goldball",    player:"messi", name:"CWC Golden Ball",      competition:"Club World Cup Golden Ball",              count:2,  years:"2009, 2011",                                      clubs:"FC Barcelona",                                  category:"individual", scope:"club",          tier:"silver", league:["ucl"], country:["europe"],                        img:"assets/trophies/cwc-gold-ball.png",     imgAlt:"FIFA Club World Cup Golden Ball award" },
+      { id:"m-uefa-poty",       player:"messi", name:"UEFA POTY",        competition:"UEFA Men's Player of the Year",            count:3,  years:"2011, 2015, 2019",                                clubs:"FC Barcelona",                                  category:"individual", scope:"club",          tier:"silver", league:["ucl"],                                         country:["europe"],                        img:"assets/trophies/uefa-poty.png",      imgAlt:"UEFA Men's Player of the Year award" },
+      { id:"m-iffhs-playmaker", player:"messi", name:"IFFHS Playmaker",      competition:"IFFHS World's Best Playmaker",            count:5,  years:"2010, 2011, 2012, 2014, 2015",                    clubs:"FC Barcelona",                                  category:"individual", scope:"club",          tier:"silver", league:["laliga"], country:["spain"],                     img:"assets/trophies/iffhs-playmaker.png", imgAlt:"IFFHS World Best Playmaker award" },
+      { id:"m-iffhs-scorer",    player:"messi", name:"IFFHS Top Scorer",     competition:"IFFHS World's Best Top Goal Scorer",      count:2,  years:"2012, 2019",                                      clubs:"FC Barcelona",                                  category:"individual", scope:"club",          tier:"silver", league:["laliga"], country:["spain"],                     img:"assets/trophies/iffhs-scorer.png",    imgAlt:"IFFHS World Best Goal Scorer award" },
+      
+      /* Club — team */
+      { id:"m-ucl",             player:"messi", name:"Champions League",     competition:"UEFA Champions League",                   count:4,  years:"2006, 2009, 2011, 2015",                          clubs:"FC Barcelona",                                  category:"team", group:"ucl",           scope:"club",          tier:"gold",   league:["ucl"], country:["europe"],        img:"assets/trophies/ucl.png",             imgAlt:"UEFA Champions League trophy — large silver cup with big handles" },
+      { id:"m-laliga",          player:"messi", name:"La Liga",              competition:"La Liga",                                 count:10, years:"2005, 2006, 2009, 2010, 2011, 2013, 2015, 2016, 2018, 2019", clubs:"FC Barcelona",                        category:"team", group:"league",        scope:"club",          tier:"gold",   league:["laliga"], country:["spain"],     img:"assets/trophies/laliga.png",           imgAlt:"La Liga trophy — silver and gold shield-shaped trophy" },
+      { id:"m-ligue1",          player:"messi", name:"Ligue 1",              competition:"Ligue 1",                                 count:1,  years:"2022/23",                                          clubs:"Paris Saint-Germain",                           category:"team", group:"league",        scope:"club",          tier:"gold",   league:["ligue1"], country:["france"],     img:"assets/trophies/ligue1.png",           imgAlt:"Ligue 1 trophy — French league gold trophy" },
+      { id:"m-mls-cup",         player:"messi", name:"MLS Cup",              competition:"MLS Cup",                                 count:1,  years:"2025",                                            clubs:"Inter Miami CF",                                category:"team", group:"league",        scope:"club",          tier:"gold",   league:["mls"], country:["usa"],        img:"assets/trophies/mls-cup.png",          imgAlt:"MLS Cup trophy" },
+      { id:"m-copa-del-rey",    player:"messi", name:"Copa del Rey",         competition:"Copa del Rey",                            count:7,  years:"2009, 2012, 2015, 2016, 2017, 2018, 2021",         clubs:"FC Barcelona",                                  category:"team", group:"domestic-cup",  scope:"club",          tier:"silver", league:["laliga"], country:["spain"],     img:"assets/trophies/copa-del-rey.png",     imgAlt:"Copa del Rey trophy — ornate gold cup with royal crest" },
+      { id:"m-supercopa-esp",   player:"messi", name:"Supercopa España",     competition:"Supercopa de España",                     count:7,  years:"2005, 2006, 2009, 2010, 2011, 2013, 2018",         clubs:"FC Barcelona",                                  category:"team", group:"super-cup",     scope:"club",          tier:"silver", league:["laliga"], country:["spain"],     img:"assets/trophies/supercopa.png",        imgAlt:"Supercopa de España trophy" },
+      { id:"m-uefa-super",      player:"messi", name:"UEFA Super Cup",       competition:"UEFA Super Cup",                          count:3,  years:"2009, 2011, 2015",                                clubs:"FC Barcelona",                                  category:"team", group:"super-cup",     scope:"club",          tier:"silver", league:["ucl"], country:["europe"],        img:"assets/trophies/uefa-super-cup.png",   imgAlt:"UEFA Super Cup trophy" },
+      { id:"m-cwc",             player:"messi", name:"Club World Cup",       competition:"FIFA Club World Cup",                     count:3,  years:"2009, 2011, 2015",                                clubs:"FC Barcelona",                                  category:"team", group:"club-world-cup", scope:"club",         tier:"silver", league:["ucl"], country:["europe"],        img:"assets/trophies/club-world-cup.png",   imgAlt:"FIFA Club World Cup trophy" },
+      { id:"m-mls-supporters",  player:"messi", name:"MLS Supporters' Shield", competition:"MLS Supporters' Shield",               count:1,  years:"2024",                                            clubs:"Inter Miami CF",                                category:"team", group:"league",        scope:"club",          tier:"silver", league:["mls"], country:["usa"],        img:"assets/trophies/mls-shield.png",       imgAlt:"MLS Supporters' Shield trophy" },
+      { id:"m-mls-east",        player:"messi", name:"Eastern Conference",   competition:"MLS Eastern Conference Champions",        count:1,  years:"2025",                                            clubs:"Inter Miami CF",                                category:"team", group:"league",        scope:"club",          tier:"silver", league:["mls"], country:["usa"],        img:"assets/trophies/mls-conference.png",   imgAlt:"MLS Eastern Conference trophy" },
+      { id:"m-leagues-cup",     player:"messi", name:"Leagues Cup",          competition:"Leagues Cup (MLS/Liga MX)",               count:1,  years:"2023",                                            clubs:"Inter Miami CF",                                category:"team", group:"domestic-cup",  scope:"club",          tier:"silver", league:["mls"], country:["usa"],        img:"assets/trophies/leagues-cup.png",      imgAlt:"Leagues Cup trophy" },
+
+      /* International — team */
+      { id:"m-world-cup",       player:"messi", name:"World Cup",            competition:"FIFA World Cup",                          count:1,  years:"2022",                                            clubs:"Argentina",                                     category:"team", group:"international", scope:"international", tier:"gold",   league:["international"], country:["international","argentina"], notes:"Messi's crowning achievement. 7 goals, Golden Boot, Golden Ball.", img:"assets/trophies/world-cup.png",   imgAlt:"FIFA World Cup trophy — gold figure holding up the globe" },
+      { id:"m-copa-america",    player:"messi", name:"Copa América",         competition:"Copa América",                            count:2,  years:"2021, 2024",                                      clubs:"Argentina",                                     category:"team", group:"international", scope:"international", tier:"gold",   league:["international"], country:["international","argentina"], img:"assets/trophies/copa-america.png",     imgAlt:"Copa América trophy — silver cup with blue laurel details" },
+      { id:"m-finalissima",     player:"messi", name:"Finalissima",          competition:"Finalissima (CONMEBOL–UEFA)",             count:1,  years:"2022",                                            clubs:"Argentina",                                     category:"team", group:"international", scope:"international", tier:"silver", league:["international"], country:["international","argentina"], img:"assets/trophies/finalissima.png",      imgAlt:"Finalissima trophy" },
+
+      /* ════════════════ RONALDO ════════════════ */
+
+      /* Individual */
+      { id:"r-ballon-dor",      player:"ronaldo", name:"Ballon d'Or",        competition:"Ballon d'Or",                             count:5,  years:"2008, 2013, 2014, 2016, 2017",                    clubs:"Man United (×1), Real Madrid (×4)",             category:"individual", scope:"club",          tier:"gold",   league:["premier-league","laliga","serie-a"],            country:["england","spain","italy"],        img:"assets/trophies/ballon-dor.png",      imgAlt:"Ballon d'Or trophy — golden ball on a black pedestal" },
+      { id:"r-golden-shoe",     player:"ronaldo", name:"European Golden Shoe",        competition:"All European Leagues",                    count:4,  years:"2008, 2011, 2015, 2021",                          clubs:"Man United (×1), Real Madrid (×2), Juventus (×1)", category:"individual", scope:"club",       tier:"gold",   league:["premier-league","laliga","serie-a"],            country:["england","spain","italy"],        img:"assets/trophies/golden-shoe.png",     imgAlt:"European Golden Shoe — golden boot trophy" },
+      { id:"r-golden-foot",     player:"ronaldo", name:"Golden Foot",        competition:"Golden Foot Award",                       count:1,  years:"2020",                                            clubs:"Juventus",                                      category:"individual", scope:"club",          tier:"gold",   league:["serie-a"],                                     country:["italy"],                         img:"assets/trophies/golden-foot.png",     imgAlt:"Golden Foot award trophy" },
+      { id:"r-euro-boot",       player:"ronaldo", name:"Euro Golden Boot",   competition:"UEFA Euro Golden Boot",                   count:1,  years:"2020",                                            clubs:"Portugal",                                      category:"individual", scope:"international", tier:"gold",   league:["international"],                               country:["international","portugal"],      img:"assets/trophies/golden-shoe.png",     imgAlt:"UEFA Euro top scorer award" },
+      { id:"r-ucl-boot",        player:"ronaldo", name:"UCL Golden Boot",    competition:"Champions League Top Scorer",             count:7,  years:"2008, 2013, 2014, 2015, 2016, 2017, 2018",         clubs:"Man United (×1), Real Madrid (×6)",             category:"individual", scope:"club",          tier:"silver", league:["ucl"],                                         country:["europe"],                        img:"assets/trophies/golden-shoe.png",     imgAlt:"UEFA Champions League top scorer award" },
+      { id:"r-laliga-goldball", player:"ronaldo", name:"La Liga Golden Ball", competition:"La Liga Golden Ball",                    count:1,  years:"2014",                                            clubs:"Real Madrid",                                   category:"individual", scope:"club",          tier:"silver", league:["laliga"],                                      country:["spain"],                         img:"assets/trophies/golden-ball.png",     imgAlt:"La Liga Golden Ball award" },
+      { id:"r-laliga-boot",     player:"ronaldo", name:"La Liga Boot",       competition:"La Liga Golden Boot",                     count:3,  years:"2011, 2014, 2015",                                clubs:"Real Madrid",                                   category:"individual", scope:"club",          tier:"silver", league:["laliga"],                                      country:["spain"],                         img:"assets/trophies/golden-shoe.png",     imgAlt:"La Liga top scorer award" },
+      { id:"r-seriea-goldball", player:"ronaldo", name:"Serie A Golden Ball", competition:"Serie A Golden Ball",                    count:2,  years:"2019, 2020",                                      clubs:"Juventus",                                      category:"individual", scope:"club",          tier:"silver", league:["serie-a"],                                     country:["italy"],                         img:"assets/trophies/golden-ball.png",     imgAlt:"Serie A Golden Ball award" },
+      { id:"r-seriea-boot",     player:"ronaldo", name:"Capocannoniere",     competition:"Serie A Golden Boot (Capocannoniere)",    count:1,  years:"2021",                                            clubs:"Juventus",                                      category:"individual", scope:"club",          tier:"silver", league:["serie-a"],                                     country:["italy"],                         img:"assets/trophies/capocannoniere.png",     imgAlt:"Serie A Capocannoniere top scorer award" },
+      { id:"r-pl-goldball",     player:"ronaldo", name:"PL Golden Ball",     competition:"Premier League Golden Ball",              count:2,  years:"2007, 2008",                                      clubs:"Manchester United",                             category:"individual", scope:"club",          tier:"silver", league:["premier-league"],                              country:["england"],                       img:"assets/trophies/golden-ball.png",     imgAlt:"Premier League Golden Ball award" },
+      { id:"r-pl-boot",         player:"ronaldo", name:"PL Golden Boot",     competition:"Premier League Golden Boot",              count:1,  years:"2008",                                            clubs:"Manchester United",                             category:"individual", scope:"club",          tier:"silver", league:["premier-league"],                              country:["england"],                       img:"assets/trophies/pl-golden-boot.png",     imgAlt:"Premier League top scorer award" },
+      { id:"r-puskas",          player:"ronaldo", name:"Puskás Award",       competition:"FIFA Puskás Award",                       count:1,  years:"2009",                                            clubs:"Manchester United",                             category:"individual", scope:"club",          tier:"silver", league:["premier-league"],                              country:["england"],                       img:"assets/trophies/puskas.png",           imgAlt:"FIFA Puskás Award trophy" },
+      { id:"r-cwc-goldball",    player:"ronaldo", name:"CWC Golden Ball",    competition:"Club World Cup Golden Ball",              count:1,  years:"2016",                                            clubs:"Real Madrid",                                   category:"individual", scope:"club",          tier:"silver", league:["ucl"],                                         country:["europe"],                        img:"assets/trophies/golden-ball.png",     imgAlt:"FIFA Club World Cup Golden Ball award" },
+      { id:"r-uefa-poty",       player:"ronaldo", name:"UEFA POTY",      competition:"UEFA Men's Player of the Year",            count:4,  years:"2014, 2016, 2017, 2018",                          clubs:"Real Madrid",                                   category:"individual", scope:"club",          tier:"silver", league:["ucl"],                                         country:["europe"],                        img:"assets/trophies/uefa-poty.png",      imgAlt:"UEFA Men's Player of the Year award" },
+      { id:"r-iffhs-scorer",    player:"ronaldo", name:"IFFHS Top Scorer",   competition:"IFFHS World's Best Top Goal Scorer",      count:5,  years:"2011, 2013, 2014, 2015, 2016",                    clubs:"Real Madrid",                                   category:"individual", scope:"club",          tier:"silver", league:["laliga"],                                      country:["spain"],                         img:"assets/trophies/iffhs-scorer.png",    imgAlt:"IFFHS World Best Goal Scorer award" },
+
+      /* Club — team */
+      { id:"r-ucl",             player:"ronaldo", name:"Champions League",   competition:"UEFA Champions League",                   count:5,  years:"2008, 2014, 2016, 2017, 2018",                    clubs:"Man United (×1), Real Madrid (×4)",             category:"team", group:"ucl",            scope:"club",          tier:"gold",   league:["ucl"],            country:["europe"],                              notes:"5 UCL titles across two clubs. First won at Man United, then four consecutive finals with Real Madrid.", img:"assets/trophies/ucl.png",  imgAlt:"UEFA Champions League trophy — large silver cup with big handles" },
+      { id:"r-premier-league",  player:"ronaldo", name:"Premier League",     competition:"Premier League",                          count:3,  years:"2007, 2008, 2009",                                clubs:"Manchester United",                             category:"team", group:"league",          scope:"club",          tier:"gold",   league:["premier-league"], country:["england"],                             img:"assets/trophies/premier-league.png",   imgAlt:"Premier League trophy — gold and purple trophy with lion handles" },
+      { id:"r-laliga",          player:"ronaldo", name:"La Liga",            competition:"La Liga",                                 count:2,  years:"2012, 2017",                                      clubs:"Real Madrid",                                   category:"team", group:"league",          scope:"club",          tier:"gold",   league:["laliga"],         country:["spain"],                               img:"assets/trophies/laliga.png",           imgAlt:"La Liga trophy — silver and gold shield-shaped trophy" },
+      { id:"r-serie-a",         player:"ronaldo", name:"Serie A",            competition:"Serie A",                                 count:2,  years:"2019, 2020",                                      clubs:"Juventus",                                      category:"team", group:"league",          scope:"club",          tier:"gold",   league:["serie-a"],        country:["italy"],                               img:"assets/trophies/serie-a.png",          imgAlt:"Serie A Scudetto shield — black and gold with Italy crest" },
+      { id:"r-saudi-pro",       player:"ronaldo", name:"Saudi Pro League",   competition:"Saudi Pro League",                        count:1,  years:"2025/26",                                         clubs:"Al Nassr",                                      category:"team", group:"league",          scope:"club",          tier:"gold",   league:["saudi-pro"],      country:["saudi arabia"],                        img:"assets/trophies/saudi-pro-league.png", imgAlt:"Saudi Pro League trophy" },
+      { id:"r-fa-cup",          player:"ronaldo", name:"FA Cup",             competition:"FA Cup",                                  count:1,  years:"2004",                                            clubs:"Manchester United",                             category:"team", group:"domestic-cup",    scope:"club",          tier:"silver", league:["premier-league"], country:["england"],                             img:"assets/trophies/fa-cup.png",            imgAlt:"FA Cup trophy — silver trophy with fluted base" },
+      { id:"r-carabao",         player:"ronaldo", name:"Carabao Cup",         competition:"Carabao Cup",                count:2,  years:"2006, 2009",                                      clubs:"Manchester United",                             category:"team", group:"domestic-cup",    scope:"club",          tier:"silver", league:["premier-league"], country:["england"],                             img:"assets/trophies/carabao-cup.png",      imgAlt:"EFL Carabao Cup trophy" },
+      { id:"r-copa-del-rey",    player:"ronaldo", name:"Copa del Rey",       competition:"Copa del Rey",                            count:2,  years:"2011, 2014",                                      clubs:"Real Madrid",                                   category:"team", group:"domestic-cup",    scope:"club",          tier:"silver", league:["laliga"],         country:["spain"],                               img:"assets/trophies/copa-del-rey.png",     imgAlt:"Copa del Rey trophy — ornate gold cup with royal crest" },
+      { id:"r-coppa-italia",    player:"ronaldo", name:"Coppa Italia",       competition:"Coppa Italia",                            count:1,  years:"2021",                                            clubs:"Juventus",                                      category:"team", group:"domestic-cup",    scope:"club",          tier:"silver", league:["serie-a"],        country:["italy"],                               img:"assets/trophies/coppa-italia.png",     imgAlt:"Coppa Italia trophy — ornate Italian cup" },
+      { id:"r-community",       player:"ronaldo", name:"Community Shield",   competition:"FA Community Shield",                     count:2,  years:"2007, 2008",                                      clubs:"Manchester United",                             category:"team", group:"super-cup",       scope:"club",          tier:"silver", league:["premier-league"], country:["england"],                             img:"assets/trophies/community-shield.png", imgAlt:"FA Community Shield trophy" },
+      { id:"r-supercopa-esp",   player:"ronaldo", name:"Supercopa España",   competition:"Supercopa de España",                     count:2,  years:"2012, 2017",                                      clubs:"Real Madrid",                                   category:"team", group:"super-cup",       scope:"club",          tier:"silver", league:["laliga"],         country:["spain"],                               img:"assets/trophies/supercopa.png",        imgAlt:"Supercopa de España trophy" },
+      { id:"r-supercoppa-ita",  player:"ronaldo", name:"Supercoppa Italia",  competition:"Supercoppa Italiana",                     count:2,  years:"2019, 2020",                                      clubs:"Juventus",                                      category:"team", group:"super-cup",       scope:"club",          tier:"silver", league:["serie-a"],        country:["italy"],                               img:"assets/trophies/supercoppa-italia.png",imgAlt:"Supercoppa Italiana trophy" },
+      { id:"r-supercopa-por",   player:"ronaldo", name:"Supercopa Portugal", competition:"Supertaça Cândido de Oliveira",           count:1,  years:"2002",                                            clubs:"Sporting CP",                                   category:"team", group:"super-cup",       scope:"club",          tier:"silver", league:["portugal-league"], country:["portugal"],                           img:"assets/trophies/supercopa-portugal.png", imgAlt:"Supertaça de Portugal trophy" },
+      { id:"r-arab-club",       player:"ronaldo", name:"King Salman Cup",   competition:"Arab Club Champions Cup",                 count:1,  years:"2023",                                            clubs:"Al Nassr",                                      category:"team", group:"domestic-cup",    scope:"club",          tier:"silver", league:["saudi-pro"],      country:["saudi arabia"],                        img:"assets/trophies/arab-club-cup.png",     imgAlt:"Arab Club Champions Cup trophy" },
+      { id:"r-uefa-super",      player:"ronaldo", name:"UEFA Super Cup",     competition:"UEFA Super Cup",                          count:3,  years:"2008, 2014, 2017",                                clubs:"Man United (×1), Real Madrid (×2)",             category:"team", group:"super-cup",       scope:"club",          tier:"silver", league:["ucl"],            country:["europe"],                              img:"assets/trophies/uefa-super-cup.png",   imgAlt:"UEFA Super Cup trophy" },
+      { id:"r-cwc",             player:"ronaldo", name:"Club World Cup",     competition:"FIFA Club World Cup",                     count:4,  years:"2008, 2014, 2016, 2017",                          clubs:"Man United (×1), Real Madrid (×3)",             category:"team", group:"club-world-cup",  scope:"club",          tier:"silver", league:["ucl"],            country:["europe"],                              img:"assets/trophies/club-world-cup.png",   imgAlt:"FIFA Club World Cup trophy" },
+
+      /* International — team */
+      { id:"r-euro",            player:"ronaldo", name:"Euro",               competition:"UEFA European Championship",              count:1,  years:"2016",                                            clubs:"Portugal",                                      category:"team", group:"international",   scope:"international", tier:"gold",   league:["international"], country:["international","portugal"],             notes:"Portugal's first ever major tournament win. Ronaldo left injured but returned to coach from the sideline.", img:"assets/trophies/euro.png", imgAlt:"UEFA Euro trophy — Henri Delaunay Cup, silver with gold base" },
+      { id:"r-nations-league",  player:"ronaldo", name:"Nations League",     competition:"UEFA Nations League",                     count:2,  years:"2019, 2021",                                      clubs:"Portugal",                                      category:"team", group:"international",   scope:"international", tier:"silver", league:["international"], country:["international","portugal"],             img:"assets/trophies/nations-league.png",  imgAlt:"UEFA Nations League trophy" },
+    ];
+
+    const SHELF_GROUPS = [
+      { key: "individual-top",  label: "Individual Awards",  filter: t => t.category === "individual" && t.tier === "gold"   },
+      { key: "individual-rest", label: "Individual — Other", filter: t => t.category === "individual" && t.tier === "silver" },
+      { key: "international",   label: "International",      filter: t => t.scope === "international"  && t.category === "team" },
+      { key: "club-team",       label: "Club Trophies",      filter: t => t.scope === "club"           && t.category === "team" },
+    ];
+
+    /* ── State ── */
+    let activeFilter   = "all";
+    let activeTrophyId = null;
+    let searchQuery    = "";
+
+    /* ── Trophy search aliases ── */
+
+    // Maps normalised query → league tag(s) to match
+    const LEAGUE_ALIASES = {
+      "laliga":      		["laliga"],
+      "la liga":           	["laliga"],
+      "liga":             	["laliga"],
+      "serie a":          	["serie-a"],
+      "seriea":         	["serie-a"],
+      "calcio":       	     	["serie-a"],
+      "premier league":    	["premier-league"],
+      "epl":               	["premier-league"],
+      "pl":                	["premier-league"],
+      "ligue 1":           	["ligue1"],
+      "ligue1":            	["ligue1"],
+      "psg":               	["ligue1"],
+      "mls":               	["mls"],
+      "inter miami":       	["mls"],
+      "miami":             	["mls"],
+      "saudi":             	["saudi-pro"],
+      "saudi pro":         	["saudi-pro"],
+      "al nassr":          	["saudi-pro"],
+      "ucl":               	["ucl"],
+      "champions league":  	["ucl"],
+      "champions":         	["ucl"],
+      "cl":                	["ucl"],
+      "spanish league":     	["laliga"],
+      "primera division":   	["laliga"],
+      "primera":            	["laliga"],
+      "la liga santander":  	["laliga"],
+      "italian league":    	["serie-a"],
+      "scudetto":           	["serie-a"],
+      "english league":     	["premier-league"],
+      "prem":               	["premier-league"],
+      "french league":      	["ligue1"],
+      "ligue one":          	["ligue1"],
+      "major league soccer":	["mls"],
+      "american league":    	["mls"],
+      "saudi league":       	["saudi-pro"],
+      "spl":                	["saudi-pro"],
+      "uefa champions league":	["ucl"],
+      "european cup":       	["ucl"],
+      "big ears":           	["ucl"],
+      "europa league":      	["uel"],
+      "uel":                	["uel"],
+      "conference league":  	["uecl"],
+      "uecl":               	["uecl"],
+    };
+
+    // Maps normalised query → country tag(s) to match
+    const COUNTRY_ALIASES = {
+      "spain":             	["spain"],
+      "spanish":           	["spain"],
+      "espana":            	["spain"],
+      "barcelona":         	["spain"],
+      "real madrid":       	["spain"],
+      "italy":             	["italy"],
+      "italian":           	["italy"],
+      "italia":            	["italy"],
+      "juventus":          	["italy"],
+      "england":           	["england"],
+      "english":           	["england"],
+      "manchester":        	["england"],
+      "man united":        	["england"],
+      "man utd":           	["england"],
+      "france":            	["france"],
+      "french":            	["france"],
+      "usa":               	["usa"],
+      "america":           	["usa"],
+      "american":          	["usa"],
+      "portugal":          	["portugal"],
+      "portuguese":        	["portugal"],
+      "sporting":         	["portugal"],
+      "saudi arabia":      	["saudi arabia"],
+      "argentina":         	["argentina"],
+      "international":     	["international"],
+      "europe":            	["europe"],
+      "barca":              	["spain"],
+      "fc barcelona":       	["spain"],
+      "madrid":             	["spain"],
+      "juve":               	["italy"],
+      "turin":              	["italy"],
+      "united":             	["england"],
+      "old trafford":       	["england"],
+      "paris":              	["france"],
+      "psg":                	["france"],
+      "us":                 	["usa"],
+      "united states":      	["usa"],
+      "lisbon":             	["portugal"],
+      "sporting cp":        	["portugal"],
+      "saudi":              	["saudi arabia"],
+      "alnassr":            	["saudi arabia"],
+      "argentinian":        	["argentina"],
+      "uefa":               	["europe"],
+      "european":           	["europe"],
+    };
+
+    // Maps normalised query → group value
+    const GROUP_ALIASES = {
+      "league":            	"league",
+      "leagues":           	"league",
+      "league title":      	"league",
+      "domestic league":   	"league",
+      "cup":               	"domestic-cup",
+      "cups":              	"domestic-cup",
+      "domestic cup":      	"domestic-cup",
+      "fa cup":            	"domestic-cup",
+      "copa del rey":      	"domestic-cup",
+      "copa rey":          	"domestic-cup",
+      "coppa italia":      	"domestic-cup",
+      "carabao":          	"domestic-cup",
+      "league cup":        	"domestic-cup",
+      "efl":               	"domestic-cup",
+      "super cup":         	"super-cup",
+      "supercup":          	"super-cup",
+      "supercopa":         	"super-cup",
+      "supercoppa":        	"super-cup",
+      "community shield":  	"super-cup",
+      "community":         	"super-cup",
+      "domestic super cup":	"super-cup",
+      "club world cup":    	"club-world-cup",
+      "cwc":               	"club-world-cup",
+      "intercontinental":  	"club-world-cup",
+      "international":     	"international",
+      "world cup":         	"international",
+      "copa america":      	"international",
+      "euros":             	"international",
+      "nations league":    	"international",
+      "finalissima":       	"international",
+      "title":               	"league",
+      "titles":              	"league",
+      "championship":        	"league",
+      "championships":       	"league",
+
+      "knockout":            	"domestic-cup",
+      "domestic cups":       	"domestic-cup",
+
+      "super cups":          	"super-cup",
+      "shield":              	"super-cup",
+
+      "fifa club world cup": 	"club-world-cup",
+      "world club cup":      	"club-world-cup",
+
+      "national team":       	"international",
+      "country":             	"international",
+      "international trophy":	"international",
+      "international trophies":	"international",
+      "continental":         	"international",
+    };
+
+    // Specific id-level aliases for individual awards
+    const ID_ALIASES = {
+      "pichichi":          ["m-laliga-pichichi"],
+      "picichi":           ["m-laliga-pichichi"],
+      "pitxitxi":          ["m-laliga-pichichi"],
+      "ballon":            ["m-ballon-dor","r-ballon-dor"],
+      "balon":             ["m-ballon-dor","r-ballon-dor"],
+      "ballon dor":        ["m-ballon-dor","r-ballon-dor"],
+      "balon de oro":      ["m-ballon-dor","r-ballon-dor"],
+      "golden shoe":       ["m-golden-shoe","r-golden-shoe"],
+      "european boot":     ["m-golden-shoe","r-golden-shoe"],
+      "laureus":           ["m-laureus"],
+      "puskas":            ["r-puskas","m-goal-of-year"],
+      "goal of the year":  ["r-puskas","m-goal-of-year"],
+      "capocannoniere":    ["r-seriea-boot"],
+      "capocannionere":    ["r-seriea-boot"],
+      "iffhs":             ["m-iffhs-playmaker","m-iffhs-scorer","m-iffhs-div","m-iffhs-decade","r-iffhs-scorer","r-iffhs-div","r-iffhs-century"],
+      "playmaker":         ["m-iffhs-playmaker","m-iffhs-decade"],
+      "golden foot":       ["r-golden-foot"],
+      "ballondor":           ["m-ballon-dor","r-ballon-dor"],
+      "bdor":                ["m-ballon-dor","r-ballon-dor"],
+      "golden boot":         ["m-golden-shoe","r-golden-shoe"],
+      "european golden shoe":["m-golden-shoe","r-golden-shoe"],
+      "the best":            ["m-the-best","r-the-best"],
+      "fifa best":           ["m-the-best","r-the-best"],
+      "world player":        ["m-fifa-poty","r-fifa-poty"],
+      "player of the year":  ["m-fifa-poty","r-fifa-poty"],
+      "footballer of the year":["m-fifa-poty","r-fifa-poty"],
+      "ucl top scorer":      ["m-ucl-boot","r-ucl-boot"],
+      "champions league top scorer":["m-ucl-boot","r-ucl-boot"],
+      "golden ball":         ["m-worldcup-ball","m-copa-ball"],
+      "wc golden ball":      ["m-worldcup-ball"],
+      "copa mvp":            ["m-copa-ball"],
+      "copa america mvp":    ["m-copa-ball"],
+      "best playmaker":      ["m-iffhs-playmaker"],
+      "iffhs playmaker":     ["m-iffhs-playmaker"],
+      "best scorer":         ["m-iffhs-scorer","r-iffhs-scorer"],
+      "century award":       ["r-iffhs-century"],
+      "goat":                ["ronaldo"],
+      "goal machine":        ["m-golden-shoe","r-golden-shoe"],
+    };
+
+const TROPHY_ALIASES = {
+  "ucl": ["champions-league"],
+  "cl": ["champions-league"],
+  "champions league": ["champions-league"],
+  "european cup": ["champions-league"],
+
+  "copa del rey": ["copa-del-rey"],
+  "cdr": ["copa-del-rey"],
+  "copa": ["copa-del-rey"],
+
+  "fa cup": ["fa-cup"],
+  "fa": ["fa-cup"],
+
+  "league cup": ["league-cup"],
+  "efl": ["league-cup"],
+  "carabao": ["league-cup"],
+  "carabao cup": ["league-cup"],
+
+  "community shield": ["community-shield"],
+  "shield": ["community-shield"],
+
+  "supercopa": ["spanish-super-cup"],
+  "spanish super cup": ["spanish-super-cup"],
+
+  "supercoppa": ["italian-super-cup"],
+  "italian super cup": ["italian-super-cup"],
+
+  "club world cup": ["club-world-cup"],
+  "cwc": ["club-world-cup"],
+
+  "world cup": ["world-cup"],
+  "wc": ["world-cup"],
+
+  "copa america": ["copa-america"],
+
+  "euro": ["euro"],
+  "euros": ["euro"],
+  "european championship": ["euro"],
+
+  "nations league": ["nations-league"],
+
+  "finalissima": ["finalissima"],
+
+  "arab club champions cup": ["arab-club-champions-cup"],
+  "arab cup": ["arab-club-champions-cup"],
+
+  "super cup": ["super-cup"],
+  "supercup": ["super-cup"]
+};
+
+    /* ── Fuzzy / alias search ── */
+    function normalise(str) {
+      return str.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // strip accents
+        .replace(/[''´`]/g, "")                            // strip apostrophes
+        .replace(/[^a-z0-9 ]/g, " ")                      // non-alphanumeric → space
+        .replace(/\s+/g, " ").trim();
+    }
+const PLAYER_ALIASES = {
+  // Ronaldo
+  "goat": "ronaldo",
+  "cr7": "ronaldo",
+  "siu": "ronaldo",
+  "siuuu": "ronaldo",
+  "siuuu": "ronaldo",
+  "camel": "ronaldo",
+  "penaldo": "ronaldo",
+  "tapinaldo": "ronaldo",
+  "sui": "ronaldo",
+
+  // Messi
+  "messi": "messi",
+  "leo": "messi",
+  "lm10": "messi",
+  "bauna": "messi",
+  "midget": "messi",
+  "dwarf": "messi",
+  "autism": "messi",
+  "aura farmer": "messi",
+  "ghosti": "messi",
+  "pessi": "messi",
+  "pepsi": "messi",
+  "barca merchant": "messi",
+  "fifa boy": "messi",
+  "fifa princess": "messi"
+};
+
+    function searchMatches(t, query) {
+      if (!query) return true;
+      const q = normalise(query);
+
+      // Helper: check if any alias key matches query, return matched value
+      function aliasMatch(map) {
+        for (const [alias, val] of Object.entries(map)) {
+          const na = normalise(alias);
+          if (q === na || q.includes(na) || na.includes(q)) return val;
+        }
+        return null;
+      }
+
+      // 1. League alias — match against trophy's league[] array
+      const leagueMatch = aliasMatch(LEAGUE_ALIASES);
+      if (leagueMatch) {
+        const tl = t.league || [];
+        return leagueMatch.some(l => tl.includes(l));
+      }
+
+      // 2. Country alias — match against trophy's country[] array
+      const countryMatch = aliasMatch(COUNTRY_ALIASES);
+      if (countryMatch) {
+        const tc = t.country || [];
+        return countryMatch.some(c => tc.includes(c));
+      }
+	// 3. Player alias
+const playerMatch = aliasMatch(PLAYER_ALIASES);
+if (playerMatch) return t.player === playerMatch;
+
+      // 3. Group alias — match against trophy's group field
+      const groupMatch = aliasMatch(GROUP_ALIASES);
+      if (groupMatch) return t.group === groupMatch;
+
+      // 4. ID-level aliases
+      const idMatch = aliasMatch(ID_ALIASES);
+      if (idMatch) return idMatch.includes(t.id);
+
+      // 5. Fuzzy fallback — all words must appear in combined haystack
+      const haystack = normalise(
+        [t.name, t.competition, t.clubs || "", t.id, t.group || "",
+         (t.league || []).join(" "), (t.country || []).join(" ")].join(" ")
+      );
+      return q.split(" ").filter(Boolean).every(w => haystack.includes(w));
+    }
+
+    /* ── Filtering ── */
+    function getFiltered(player) {
+      return TROPHIES.filter(t => {
+        if (t.player !== player) return false;
+        if (activeFilter === "team")          { if (t.category !== "team")          return false; }
+        if (activeFilter === "individual")    { if (t.category !== "individual")    return false; }
+        if (activeFilter === "international") { if (t.scope    !== "international") return false; }
+        if (activeFilter === "club")          { if (t.scope    !== "club")          return false; }
+        return searchMatches(t, searchQuery);
+      });
+    }
+
+    /* ── Trophy card builder ── */
+    function buildTrophyCard(t) {
+      const card = document.createElement("div");
+      card.className = "trophy-card";
+      card.setAttribute("data-tier", t.tier);
+      card.setAttribute("data-id", t.id);
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-label", `${t.name} × ${t.count} — click for details`);
+      if (t.id === activeTrophyId) card.classList.add("active");
+
+      const glow = document.createElement("div");
+      glow.className = "trophy-glow";
+      glow.setAttribute("aria-hidden", "true");
+
+      const imgWrap = document.createElement("div");
+      imgWrap.className = "trophy-img-wrap";
+
+      if (t.count > 1) {
+        const badge = document.createElement("div");
+        badge.className = "trophy-count-badge";
+        badge.setAttribute("aria-hidden", "true");
+        badge.textContent = "×" + t.count;
+        imgWrap.appendChild(badge);
+      }
+
+      const img = document.createElement("img");
+      img.src = t.img;
+      img.alt = t.imgAlt;
+      img.className = "trophy-img";
+      img.onerror = function() {
+        this.style.display = "none";
+        const ph = document.createElement("div");
+        ph.className = "trophy-img-placeholder";
+        ph.setAttribute("aria-hidden", "true");
+        ph.innerHTML = `<span class="t-icon">🏆</span><span>${t.img.split("/").pop()}</span>`;
+        imgWrap.appendChild(ph);
+      };
+      imgWrap.appendChild(img);
+
+      const nameEl = document.createElement("div");
+      nameEl.className = "trophy-label";
+      nameEl.textContent = t.name;
+
+      card.appendChild(glow);
+      card.appendChild(imgWrap);
+      card.appendChild(nameEl);
+
+      card.addEventListener("click", () => openPanel(t));
+      card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") openPanel(t); });
+      return card;
+    }
+
+    /* ── Render cabinets ── */
+    function renderCabinets() {
+      ["messi", "ronaldo"].forEach(player => {
+        const body     = document.getElementById(`${player}-shelves`);
+        const filtered = getFiltered(player);
+        body.innerHTML = "";
+
+        SHELF_GROUPS.forEach(sg => {
+          const items = filtered.filter(sg.filter);
+          if (!items.length) return;
+
+          const shelf = document.createElement("div");
+          shelf.className = "shelf";
+          const label = document.createElement("div");
+          label.className = "shelf-label";
+          label.textContent = sg.label;
+          shelf.appendChild(label);
+          const row = document.createElement("div");
+          row.className = "shelf-items";
+          items.forEach(t => row.appendChild(buildTrophyCard(t)));
+          shelf.appendChild(row);
+          body.appendChild(shelf);
+        });
+
+        if (!filtered.length) {
+          const msg = document.createElement("p");
+          msg.className = "empty-shelf";
+          msg.textContent = "No trophies in this category.";
+          body.appendChild(msg);
+        }
+
+        const total  = filtered.reduce((sum, t) => sum + t.count, 0);
+        const unique = filtered.length;
+        document.getElementById(`${player}-count`).textContent =
+          `${total} trophies (${unique} types)`;
+      });
+    }
+
+    /* ── Hero totals (computed from data) ── */
+    function updateTotals() {
+      ["messi", "ronaldo"].forEach(player => {
+        const total = TROPHIES
+          .filter(t => t.player === player)
+          .reduce((sum, t) => sum + t.count, 0);
+        const heroEl = document.getElementById(`hero-${player}-total`);
+        if (heroEl) heroEl.textContent = total;
+      });
+    }
+
+    /* ── Side panel + focus trap ── */
+    const panelEl   = document.getElementById("side-panel");
+    const overlayEl = document.getElementById("overlay");
+    const FOCUSABLE = 'button, [href], input, [tabindex]:not([tabindex="-1"])';
+    let lastFocused = null;
+
+    function trapFocus(e) {
+      const focusable = [...panelEl.querySelectorAll(FOCUSABLE)];
+      const first = focusable[0];
+      const last  = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+      }
+    }
+
+    function openPanel(t) {
+      lastFocused = document.activeElement;
+      activeTrophyId = t.id;
+
+      document.getElementById("panel-name").textContent = t.name;
+      document.getElementById("panel-player-tag").textContent =
+        (t.player === "messi" ? "Lionel Messi" : "Cristiano Ronaldo") + " · " + t.category;
+      document.getElementById("panel-count").textContent       = "×" + t.count;
+      document.getElementById("panel-category").textContent    = t.category + " · " + t.scope;
+      document.getElementById("panel-competition").textContent = t.competition;
+      document.getElementById("panel-years").textContent       = t.years;
+
+      const clubsRow = document.getElementById("panel-clubs-row");
+      const clubsEl  = document.getElementById("panel-clubs");
+      if (t.clubs) { clubsEl.textContent = t.clubs; clubsRow.style.display = "flex"; }
+      else          { clubsRow.style.display = "none"; }
+
+      const notesEl = document.getElementById("panel-notes");
+      if (t.notes) { notesEl.textContent = t.notes; notesEl.style.display = "block"; }
+      else          { notesEl.style.display = "none"; }
+
+      const panelImg = document.getElementById("panel-img");
+      const panelPh  = document.getElementById("panel-img-placeholder");
+      document.getElementById("panel-img-hint").textContent = t.img.split("/").pop();
+      panelImg.src = t.img;
+      panelImg.alt = t.imgAlt;
+      panelImg.style.display = "block";
+      panelImg.onerror = function() { this.style.display = "none"; panelPh.style.display = "flex"; };
+      panelPh.style.display = "none";
+
+      panelEl.classList.add("open");
+      panelEl.removeAttribute("aria-hidden");
+      overlayEl.classList.add("open");
+      overlayEl.removeAttribute("aria-hidden");
+
+      document.querySelectorAll(".trophy-card").forEach(c => c.classList.remove("active"));
+      document.querySelectorAll(`[data-id="${t.id}"]`).forEach(c => c.classList.add("active"));
+
+      document.getElementById("panel-close").focus();
+      panelEl.addEventListener("keydown", trapFocus);
+    }
+
+    function closePanel() {
+      activeTrophyId = null;
+      panelEl.classList.remove("open");
+      panelEl.setAttribute("aria-hidden", "true");
+      overlayEl.classList.remove("open");
+      overlayEl.setAttribute("aria-hidden", "true");
+      document.querySelectorAll(".trophy-card").forEach(c => c.classList.remove("active"));
+      panelEl.removeEventListener("keydown", trapFocus);
+      if (lastFocused) lastFocused.focus();
+    }
+
+    document.getElementById("panel-close").addEventListener("click", closePanel);
+    overlayEl.addEventListener("click", closePanel);
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closePanel(); });
+
+    /* ── Search input ── */
+    const searchEl = document.getElementById("trophy-search");
+    searchEl.addEventListener("input", () => {
+      searchQuery = searchEl.value.trim();
+      searchEl.classList.toggle("has-query", searchQuery.length > 0);
+      renderCabinets();
+    });
+    searchEl.addEventListener("keydown", e => {
+      if (e.key === "Escape") {
+        searchEl.value = "";
+        searchQuery = "";
+        searchEl.classList.remove("has-query");
+        searchEl.blur();
+        renderCabinets();
+      }
+    });
+    // Hide kbd hint when focused, show again when blurred
+    searchEl.addEventListener("focus", () => {
+      const kbd = searchEl.closest(".search-wrap").querySelector(".search-kbd");
+      if (kbd) kbd.style.opacity = "0";
+    });
+    searchEl.addEventListener("blur", () => {
+      const kbd = searchEl.closest(".search-wrap").querySelector(".search-kbd");
+      if (kbd) kbd.style.opacity = "";
+    });
+
+    // Ctrl+K global shortcut
+    document.addEventListener("keydown", e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        e.preventDefault();
+        searchEl.focus();
+        searchEl.select();
+      }
+    });
+
+    /* ── Filter buttons ── */
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        activeFilter = btn.dataset.filter;
+        document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderCabinets();
+      });
+    });
+
+    /* ── Scroll-in animation ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll(".cabinet").forEach(c => observer.observe(c));
+
+    /* ── Detailed stats modal ── */
+    const detailOverlay = document.getElementById("detail-modal-overlay");
+    document.getElementById("detail-stats-btn").addEventListener("click", () => {
+      detailOverlay.classList.add("open");
+      detailOverlay.removeAttribute("aria-hidden");
+      document.getElementById("detail-modal-close").focus();
+    });
+    function closeDetailModal() {
+      detailOverlay.classList.remove("open");
+      detailOverlay.setAttribute("aria-hidden", "true");
+      document.getElementById("detail-stats-btn").focus();
+    }
+    document.getElementById("detail-modal-close").addEventListener("click", closeDetailModal);
+    detailOverlay.addEventListener("click", e => { if (e.target === detailOverlay) closeDetailModal(); });
+    document.addEventListener("keydown", e => { if (e.key === "Escape" && detailOverlay.classList.contains("open")) closeDetailModal(); });
+
+    updateTotals();
+    renderCabinets();
+  </script>
+</body>
+</html>
